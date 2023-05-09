@@ -22,3 +22,8 @@ open browser with url:
 http://localhost:8082/github
 http://localhost:8082/linkedin
 ```
+
+
+### Test
+
+go test

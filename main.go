@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 func main() {
@@ -12,7 +14,22 @@ func main() {
 }
 
 func linkedinHandler(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "https://www.linkedin.com", http.StatusSeeOther)
+	// Validate that the input URL is a valid URL
+	inputURL := r.URL.Query().Get("url")
+	_, err := url.ParseRequestURI(inputURL)
+	if err != nil {
+		http.Error(w, "Invalid URL", http.StatusBadRequest)
+		return
+	}
+
+	// Validate that the input URL is the expected LinkedIn homepage URL
+	if !strings.HasPrefix(inputURL, "https://www.linkedin.com") {
+		http.Error(w, "Invalid URL", http.StatusBadRequest)
+		return
+	}
+
+	// Redirect the user to the input URL
+	http.Redirect(w, r, inputURL, http.StatusSeeOther)
 }
 
 func githubHandler(w http.ResponseWriter, r *http.Request) {
